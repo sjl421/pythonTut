@@ -1,4 +1,6 @@
-﻿age=20
+﻿from collections import Iterable
+
+age=20
 if age >= 6:
 	print 'teenager'
 elif age >=18:
@@ -73,3 +75,61 @@ def fact(n):
 	return n*fact(n-1)
 print fact(5)		
 print fact(100)
+
+
+#切片
+L = range(100)
+print L
+print L[:10]
+print L[-10:]
+print L[10:20]
+print L[:10:2]
+print L[::5]
+print L[:]
+print (0,1,2,3,4,5)[:3] 
+print 'abcdefg'[:3]
+print 'abcdefg'[::2]
+
+
+#迭代
+d={'a':1,'b':2,'c':3}
+for key in d:
+	print key
+for value in d.itervalues():
+	print value
+
+for k,v in d.iteritems():
+	print 'k:',k,"v:",v
+
+#是否可迭代
+print isinstance('abc',Iterable)
+
+#列表生成式
+print [x*x for x in range(1,11)]
+print [x*x for x in range(1,11) if x % 2 == 0]
+#两层循环
+print [m + n for m in 'abc' for n in 'xyz']
+import os
+print [d for d in os.listdir('.')]
+dd = {'x':'1','y':'2','z':'3'}
+print [k + '=' + v for k,v in dd.iteritems()]
+LL = ['Hello','World']
+print [s.lower() for s in LL]
+
+#生成器
+g=(x*x for x in range(10))
+print g.next()
+
+for x in g:
+	print x 
+
+def fib(max):
+	n,a,b = 0,0,1
+	while n < max:
+		yield b 
+		a,b=b,a+b
+		n = n + 1
+
+print '======================'		
+for n in fib(10):
+	print n
