@@ -1,5 +1,8 @@
-from numpy import *
+﻿from numpy import *
 import operator
+import matplotlib
+import matplotlib.pyplot as plt
+
 
 def createDataSet():
 	group = array([[1.0,1.1],[1.0,1.0],[0,0],[0,0.1]])
@@ -42,3 +45,23 @@ def file2matrix(filename):
         classLabelVector.append(int(listFromLine[-1]))
         index += 1
     return returnMat,classLabelVector    
+
+datingDataMat,datingLabelVector = file2matrix('datingTestSet2.txt')
+# fig = plt.figure()
+# ax = fig.add_subplot(111)
+# ax.scatter(datingDataMat[:,0],datingDataMat[:,1],15.0*array(datingLabelVector),15.0*array(datingLabelVector))
+# plt.show()
+
+def autoNorm(dataSet):
+	minVals=dataSet.min(0)
+	maxVals=dataSet.max(0)
+	ranges=maxVals-minVals
+	normDataSet=zeros(shape(dataSet))
+    m=dataSet.shape[0]
+    normDataSet=dataSet-tile(minVals,(m,1))
+    normDataSet=normDataSet/tile(ranges,(m,1))
+    return normDataSet,ranges,minVals
+
+
+normDataMat,ranges,minVals = autoNorm(datingDataMat)    
+print 'result:',normDataSet
