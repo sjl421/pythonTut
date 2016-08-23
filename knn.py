@@ -46,22 +46,27 @@ def file2matrix(filename):
         index += 1
     return returnMat,classLabelVector    
 
-datingDataMat,datingLabelVector = file2matrix('datingTestSet2.txt')
+#datingDataMat,datingLabelVector = file2matrix('datingTestSet2.txt')
 # fig = plt.figure()
 # ax = fig.add_subplot(111)
 # ax.scatter(datingDataMat[:,0],datingDataMat[:,1],15.0*array(datingLabelVector),15.0*array(datingLabelVector))
 # plt.show()
 
+# def autoNorm(dataSet):
+# 	minVals=dataSet.min(0)
+# 	maxVals=dataSet.max(0)
+# 	ranges=maxVals-minVals
+# 	normDataSet=zeros(shape(dataSet))
+#     m=dataSet.shape[0]
+#     normDataSet=dataSet-tile(minVals,(m,1))
+#     normDataSet=normDataSet/tile(ranges,(m,1))
+#     return normDataSet,ranges,minVals
 def autoNorm(dataSet):
-	minVals=dataSet.min(0)
-	maxVals=dataSet.max(0)
-	ranges=maxVals-minVals
-	normDataSet=zeros(shape(dataSet))
-    m=dataSet.shape[0]
-    normDataSet=dataSet-tile(minVals,(m,1))
-    normDataSet=normDataSet/tile(ranges,(m,1))
-    return normDataSet,ranges,minVals
-
-
-normDataMat,ranges,minVals = autoNorm(datingDataMat)    
-print 'result:',normDataSet
+    minVals = dataSet.min(0)
+    maxVals = dataSet.max(0)
+    ranges = maxVals - minVals
+    normDataSet = zeros(shape(dataSet))
+    m = dataSet.shape[0]
+    normDataSet = dataSet - tile(minVals, (m,1))
+    normDataSet = normDataSet/tile(ranges, (m,1))   #element wise divide
+    return normDataSet, ranges, minVals
