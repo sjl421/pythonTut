@@ -1,4 +1,6 @@
-﻿#变量可以指向函数
+﻿import functools
+
+#变量可以指向函数
 f = abs
 print f(-10)
 
@@ -58,3 +60,69 @@ def reverse_cmp(x,y):
 	return 0	
 print sorted([33,5,7,8,22],reverse_cmp)
 
+#函数作为返回值 闭包（Closure）
+def lazy_sum(*args):
+	def sum():
+		ax=0
+		for n in args:
+			ax = ax + n
+		return ax
+	return sum		
+f=lazy_sum(1,3,4,6,7)
+print f
+print f()
+
+#返回闭包时牢记的一点就是：返回函数不要引用任何循环变量，或者后续会发生变化的变量。
+
+def count():
+	fs=[]
+	for i in range(1,4):
+		def f():
+			return i*i
+		fs.append(f)
+	return fs
+
+f1,f2,f3=count()
+print f1()
+print f2()
+print f3()
+
+#匿名函数
+#关键字lambda表示匿名函数，冒号前面的x表示函数参数。		
+print map(lambda x:x*x,[1,3,5,7,9])
+
+#装饰器
+def log(func):
+	def wrapper(*args,**kw):
+		print 'call %s():' % func.__name__
+		return func(*args,**kw)
+	return wrapper
+
+
+def log1(func):
+	@functools.wraps(func)
+	def wrapper(*args,**kw):
+		print 'call %s():' % func.__name__
+		return func(*args,**kw)
+	return wrapper	
+
+def log2(text):
+	def decorator(func):
+		@functools.wraps(func)
+		def wrapper(*args,**kw):
+		    print 'call %s %s():' % (text,func.__name__)
+		    return func(*args,**kw)
+		return wrapper
+	return decorator	
+
+
+@log2('execute')
+def now():
+	print '2016-08-24'
+now()
+
+#偏函数
+#当函数的参数个数太多，需要简化时，使用functools.partial可以创建一个新的函数，这个新函数可以固定住原函数的部分参数，从而在调用时更简单。
+
+int2=functools.partial(int,base=2)
+print int2('100000')
