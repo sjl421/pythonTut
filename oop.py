@@ -49,4 +49,20 @@ print type(abs)
 print len('abc')
 print 'abc'.__len__()
 
+#使用@property
+class Stu(object):
+
+    @property
+    def score(self):
+        return self._score
+
+	@score.setter	
+	def score(self,value):
+		if not isinstance(value,int):
+			raise ValueError('score must be an integer')
+		if value < 0 or value > 100:
+			raise ValueError('score must between 0 and 100')
+		self._score=value
+			
+
 
