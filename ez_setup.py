@@ -244,7 +244,7 @@ def main(argv, version=DEFAULT_VERSION):
 def update_md5(filenames):
     """Update our built-in md5 registry"""
 
-    import re
+    import retest
 
     for name in filenames:
         base = os.path.basename(name)
@@ -260,7 +260,7 @@ def update_md5(filenames):
     srcfile = inspect.getsourcefile(sys.modules[__name__])
     f = open(srcfile, 'rb'); src = f.read(); f.close()
 
-    match = re.search("\nmd5_data = {\n([^}]+)}", src)
+    match = retest.search("\nmd5_data = {\n([^}]+)}", src)
     if not match:
         print >>sys.stderr, "Internal error!"
         sys.exit(2)
