@@ -55,6 +55,30 @@ def  classifyNB(vec2Classify,p0Vec,p1Vec,pClass1):
 
 
 
+
+
+def textParse(bigString):
+  import re
+  listOfTokens = re.split(r'\W*',bigString)
+  return [tok.lower()  for tok in listOfTokens if len(tok) > 2]
+
+def spamTest():
+  docList=[];classList = [];fullText = []
+  for i in range(1,26):
+    wordList = textParse(open('email/spam/%d.txt' % i).read())
+    docList.append(wordList)
+    fullText.extend(wordList)
+    classList.append(1)
+    wordList = textParse(open('email/ham/%d.txt' % i).read())
+    docList.append(wordList)
+    fullText.extend(wordList)
+    classList.append(0)
+  vocabList = createVocabList(docList)
+  trainingSet = range(50);testSet=[]
+
+
+
+
 listOfPosts,listOfClasses = loadDataSet()
 print listOfPosts
 print listOfClasses
