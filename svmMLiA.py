@@ -69,10 +69,10 @@ def smoSimple(dataMatIn, classLabels, C, toler, maxIter):
         print "iteration number: %d" % iter
     return b,alphas
 
-dataArr, labelArr = loadDataSet('svmtest.txt')
-b, alphas = smoSimple(dataArr, labelArr, 0.6, 0.001, 40)
-print b
-print alphas
+# dataArr, labelArr = loadDataSet('svmtest.txt')
+# b, alphas = smoSimple(dataArr, labelArr, 0.6, 0.001, 40)
+# print b
+# print alphas
 
 def kernelTrans(X, A, kTup): #calc the kernel or transform data to a higher dimensional space
     m,n = shape(X)
@@ -176,6 +176,11 @@ def smoP(dataMatIn, classLabels, C, toler, maxIter,kTup=('lin', 0)):    #full Pl
         elif (alphaPairsChanged == 0): entireSet = True
         print "iteration number: %d" % iter
     return oS.b,oS.alphas
+
+dataArr, labelArr = loadDataSet('svmtest.txt')
+b, alphas = smoP(dataArr, labelArr, 0.6 , 0.001 , 40)
+print b
+print alphas
 
 def calcWs(alphas,dataArr,classLabels):
     X = mat(dataArr); labelMat = mat(classLabels).transpose()
