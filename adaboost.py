@@ -41,9 +41,53 @@ def buildStump(dataArr, classLabels , D):
     return bestStump, minError, bestClassEst
 
 
+def adaBoostTrainDS(dataArr,classLabels,numIt=40):
+    weakClassArr = []
+    m = shape(dataArr)[0]
+    D = mat(ones((m,1))/m)   #init D to all equal
+    aggClassEst = mat(zeros((m,1)))
+    for i in range(numIt):
+        bestStump,error,classEst = buildStump(dataArr,classLabels,D)#build Stump
+        print "D:",D.T
+        alpha = float(0.5*log((1.0-error)/max(error,1e-16)))#calc alpha, throw in max(error,eps) to account for error=0
+        bestStump['alpha'] = alpha
+        weakClassArr.append(bestStump)                  #store Stump Params in Array
+        print "classEst: ",classEst.T
+        expon = multiply(-1*alpha*mat(classLabels).T,classEst) #exponent for D calc, getting messy
+        D = multiply(D,exp(expon))                              #Calc New D for next iteration
+        D = D/D.sum()
+        #calc training error of all classifiers, if this is 0 quit for loop early (use break)
+        aggClassEst += alpha*classEst
+        print "aggClassEst: ",aggClassEst.T
+        aggErrors = multiply(sign(aggClassEst) != mat(classLabels).T,ones((m,1)))
+        errorRate = aggErrors.sum()/m
+        print "total error: ",errorRate
+        if errorRate == 0.0: break
+    return weakClassArr,aggClassEst
+
+def adaClassify(datToClass,classifierArr):
+    dataMatrix = mat(datToClass)#do stuff similar to last aggClassEst in adaBoostTrainDS
+    m = shape(dataMatrix)[0]
+    aggClassEst = mat(zeros((m,1)))
+    for i in range(len(classifierArr)):
+        classEst = stumpClassify(dataMatrix,classifierArr[i]['dim'],\
+                                 classifierArr[i]['thresh'],\
+                                 classifierArr[i]['ineq'])#call stump classify
+        aggClassEst += classifierArr[i]['alpha']*classEst
+        print "aggClassEst:", aggClassEst
+    return sign(aggClassEst)
+
 dataMat, classLabels = loadSimpData()
-D = mat(ones((5,1))/5)
-bestStump , minError, bestClassEst = buildStump(dataMat, classLabels, D)
-print bestStump
-print minError
-print bestClassEst
+# D = mat(ones((5,1))/5)
+# bestStump , minError, bestClassEst = buildStump(dataMat, classLabels, D)
+# print bestStump
+# print minError
+# print bestClassEst
+
+
+weakClassArr, aggClassEst = adaBoostTrainDS(dataMat, classLabels, 9)
+print "weakClassArr:", weakClassArr
+print "aggClassEst:", aggClassEst
+print "========="
+classifyResult = adaClassify([[0, 0],[5,5],[3,4]], weakClassArr)
+print classifyResult
