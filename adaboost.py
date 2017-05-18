@@ -9,6 +9,19 @@ def loadSimpData():
     classLabels = [1.0, 1.0, -1.0, -1.0, 1.0]
     return dataMat, classLabels
 
+def loadDataSet(fileName):      #general function to parse tab -delimited floats
+    numFeat = len(open(fileName).readline().split('\t')) #get number of fields
+    dataMat = []; labelMat = []
+    fr = open(fileName)
+    for line in fr.readlines():
+        lineArr =[]
+        curLine = line.strip().split('\t')
+        for i in range(numFeat-1):
+            lineArr.append(float(curLine[i]))
+        dataMat.append(lineArr)
+        labelMat.append(float(curLine[-1]))
+    return dataMat,labelMat
+
 def stumpClassify(dataMatrix, dimen, threshVal, threshIneq):
     retArray = ones((shape(dataMatrix)[0],1))
     if threshIneq == 'lt':
@@ -70,8 +83,8 @@ def adaClassify(datToClass,classifierArr):
     m = shape(dataMatrix)[0]
     aggClassEst = mat(zeros((m,1)))
     for i in range(len(classifierArr)):
-        classEst = stumpClassify(dataMatrix,classifierArr[i]['dim'],\
-                                 classifierArr[i]['thresh'],\
+        classEst = stumpClassify(dataMatrix,classifierArr[i]['dim'],
+                                 classifierArr[i]['thresh'],
                                  classifierArr[i]['ineq'])#call stump classify
         aggClassEst += classifierArr[i]['alpha']*classEst
         print "aggClassEst:", aggClassEst
@@ -85,9 +98,17 @@ dataMat, classLabels = loadSimpData()
 # print bestClassEst
 
 
-weakClassArr, aggClassEst = adaBoostTrainDS(dataMat, classLabels, 9)
-print "weakClassArr:", weakClassArr
-print "aggClassEst:", aggClassEst
-print "========="
-classifyResult = adaClassify([[0, 0],[5,5],[3,4]], weakClassArr)
-print classifyResult
+# weakClassArr, aggClassEst = adaBoostTrainDS(dataMat, classLabels, 9)
+# print "weakClassArr:", weakClassArr
+# print "aggClassEst:", aggClassEst
+# print "========="
+# classifyResult = adaClassify([[0, 0],[5,5],[3,4]], weakClassArr)
+# print classifyResult
+
+dataArr, labelArr = loadDataSet('horseColicTraining2.txt')
+classifierArray = adaBoostTrainDS(dataArr, labelArr, 10)
+testArr, testLabelArr = loadDataSet('horseColicTest2.txt')
+predication = adaClassify(testArr, classifierArray)
+errArr = mat(ones(67,1))
+errArr[predication != mat(testLabelArr).T].sum()
+print 'errArr', errArr
